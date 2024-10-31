@@ -176,7 +176,6 @@ class TicTacToe(Environment):
         print("\nGame started.\n")
         done = False
         state = self.reset()
-        i=0
         while not done :
             print('Conputer turn')
             while  True  : 
@@ -234,3 +233,45 @@ class TicTacToe(Environment):
         representation = "\n".join(prototype.format(*row) for row in self.field.tolist())
         representation = representation.replace("-1", " x").replace("1", "o").replace("0", ".")
         return "\n" + representation + "\n"
+    def play_with_frontend(self, model: nn.Module,action:int) -> None:
+        print("\nGame started.\n")
+        done = False
+        # state = self.reset()
+
+        while  True:       
+                    state, reward, done = self.step(action=action, player=1)
+                    if( reward!=-1):
+                       break
+        print(self)
+
+        if self.debug:
+                    print(f"{state = }")
+                    print(f"{reward = }")
+                    print(f"{done = }")
+
+        if done:
+                    if reward == 1:
+                        print("You win.")
+                    else:
+                        print("Draw.")
+
+        if not done:
+            print('Conputer turn')
+            while True : 
+                    action = model.predict(state, noise_level=1)
+                    state, reward, done = self.step(action=action, player=-1)
+                    if( reward != -1):
+                       break               
+        print(self)
+
+        if self.debug:
+                    print(f"{state = }")
+                    print(f"{reward = }")
+                    print(f"{done = }")
+
+        if done:
+                    if reward == 1:
+                        print("You lose.")
+                    else:
+                        print("Draw.")
+        return self.field
